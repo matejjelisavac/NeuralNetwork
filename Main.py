@@ -6,9 +6,9 @@ def sigmoid(x):
 
 class Neuron:
 
-    def __init__(self, layer, index):
+    def __init__(self, layer, index, bias):
         self.nextWeights = []
-        self.bias = 0
+        self.bias = bias
         self.value = 0
         self.index = index
         self.layer = layer
@@ -24,9 +24,8 @@ class Neuron:
 # INPUT LAYER
 inputLayer = []
 for i in range(0,5):
-    neuron = Neuron("input",i)
+    neuron = Neuron("input",i, random.uniform(-1, 1))
     neuron.value = random.random()
-    neuron.bias = random.uniform(-1,1)
     for j in range(0,5):
         neuron.nextWeights.append(random.uniform(-1,1))
 
@@ -36,9 +35,8 @@ for i in range(0,5):
 # HIDDEN LAYER 1
 hiddenLayer1 = []
 for i in range(0,5):
-    neuron = Neuron("hidden1",i)
+    neuron = Neuron("hidden1",i, random.uniform(-1, 1))
     neuron.activateValue(inputLayer)
-    neuron.bias = random.uniform(-1, 1)
     for j in range(0,5):
         neuron.nextWeights.append(random.uniform(-1,1))
     hiddenLayer1.append(neuron)
@@ -46,9 +44,8 @@ for i in range(0,5):
 # HIDDEN LAYER 2
 hiddenLayer2 = []
 for i in range(0,5):
-    neuron = Neuron("hidden2",i)
+    neuron = Neuron("hidden2",i, random.uniform(-1, 1))
     neuron.activateValue(hiddenLayer1)
-    neuron.bias = random.uniform(-1, 1)
     for j in range(0,5):
         neuron.nextWeights.append(random.uniform(-1,1))
     hiddenLayer2.append(neuron)
@@ -56,31 +53,12 @@ for i in range(0,5):
 # OUTPUT LAYER
 outputLayer = []
 for i in range(0,5):
-    neuron = Neuron("output",i)
+    neuron = Neuron("output",i, random.uniform(-1, 1))
     neuron.activateValue(hiddenLayer2)
-    neuron.bias = random.uniform(-1, 1)
     outputLayer.append(neuron)
 
 
 
 # VISUALIZATION
-for i in range(0,5):
-    print(inputLayer[i].value,"\t",hiddenLayer1[i].value,"\t",hiddenLayer2[i].value,"\t",outputLayer[i].value,"\n")
-
-print("-------------------------------------------------------------------------------------")
-
-
-for neuron in inputLayer:
-    neuron.value = 1
-
-for neuron in hiddenLayer1:
-    neuron.activateValue(inputLayer)
-
-for neuron in hiddenLayer2:
-    neuron.activateValue(hiddenLayer1)
-
-for neuron in outputLayer:
-    neuron.activateValue(hiddenLayer2)
-
 for i in range(0,5):
     print(inputLayer[i].value,"\t",hiddenLayer1[i].value,"\t",hiddenLayer2[i].value,"\t",outputLayer[i].value,"\n")
