@@ -2,6 +2,7 @@ import math
 import random
 import time
 
+#CUSTOM
 inputNeuronCount = 5
 outputNeuronCount = 5
 hiddenNeuronCount = 5
@@ -10,15 +11,19 @@ learningRate = 0.1
 epochs = 1000
 expectedOutputs = [0,1,0,0,0.5]
 
+
+#Static vars init.
 inputLayer = []
 hiddenLayer1 = []
 hiddenLayer2 = []
 outputLayer = []
 layers = [inputLayer, hiddenLayer1, hiddenLayer2, outputLayer]
 
+#Sigmoid Function
 def sigmoid(x):
     return (1 / (1 + math.exp(-x)))
 
+#Neuron Class
 class Neuron:
     def __init__(self, layer, index, bias):
         self.lastWeights = []
@@ -77,18 +82,14 @@ for i in range(0,outputNeuronCount):
     neuron.activateValue()
     outputLayer.append(neuron)
 
-# VISUALIZATION
-
-
 # CALCULATING COST FUNCTION
-
 def getCost(outputLayer, expectedOutputs):
     cost = 0
     for i in range(len(outputLayer)):
         cost += (outputLayer[i].value - expectedOutputs[i]) ** 2
     return cost
 
-
+#Get Derivative of COST wrt Bias of a neuron
 def dCdB(neuron):
     value = 0
     nextLayer = neuron.layer+1
@@ -108,6 +109,7 @@ def dCdB(neuron):
         value += neuron.getDCDZ(expectedOutputs[neuron.index])
     return value
 
+#Get Derivative of COST wrt Weight between two neurons
 def dCdW(neuron, previous):
     value = 0
     nextLayer = neuron.layer + 1
@@ -128,17 +130,18 @@ def dCdW(neuron, previous):
         value += previous.value * neuron.getDCDZ(expectedOutputs[neuron.index])
     return value
 
-
+#Learning
 for epoch in range(epochs):
     for layer in layers[1:]:
         for neuron in layer:
             neuron.activateValue()
 
-    # Print the current output for visualization
+    #VISUALIZATION BEFORE BACKPROP
     for i in range(0,5):
         print(f"{inputLayer[i].value}\t{hiddenLayer1[i].value}\t{hiddenLayer2[i].value}\t{outputLayer[i].value}")
+    print("Loss:", getCost(outputLayer, expectedOutputs))
 
-    # Backpropagate and update biases/weights
+    #Backpropagating, updating biases
     for i in range(hiddenNeuronCount):
         hiddenLayer1[i].bias -= learningRate*dCdB(hiddenLayer1[i])
         hiddenLayer2[i].bias -= learningRate*dCdB(hiddenLayer2[i])
@@ -146,11 +149,9 @@ for epoch in range(epochs):
     for i in range(outputNeuronCount):
         outputLayer[i].bias -= learningRate*dCdB(outputLayer[i])
 
+    #Backpropagating, updating weights
     for layer in layers[1:]:
         for neuron in layer:
             for previous in layers[neuron.layer-1]:
                 neuron.lastWeights[previous.index] -= learningRate*dCdW(neuron, previous)
 
-
-    print("Loss:", getCost(outputLayer, expectedOutputs))
-    print("-------------------------------------------------------------")
